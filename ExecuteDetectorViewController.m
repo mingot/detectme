@@ -11,6 +11,7 @@
 #import "ConvolutionHelper.h"
 #import "BoxSender.h"
 #import "UIImage+HOG.h"
+#import "UIImage+iHOG.h"
 #import "UIImage+Resize.h"
 #import "UIViewController+ShowAlert.h"
 #import "Reachability+DetectMe.h"
@@ -29,6 +30,7 @@
     BOOL _scale;
     int _level;
     BOOL _hog;
+    BOOL _ihog;
     
     BOOL _sendBoxesToServer;
     
@@ -281,6 +283,17 @@
         [self.HOGimageView performSelectorOnMainThread:@selector(setImage:) withObject:image waitUntilDone:YES];
     }
     
+    if (_ihog){
+        _ihog=false;
+        UIImage *preimage = [[UIImage imageWithCGImage:imageRef scale:1 orientation:UIImageOrientationRight] scaleImageTo:0.9*230/480.0];
+        [self.HOGimageView performSelectorOnMainThread:@selector(setImage:) withObject:preimage waitUntilDone:YES];
+        UIImage *postimage = [preimage convertToIHOG];
+        [self.HOGimageView performSelectorOnMainThread:@selector(setImage:) withObject:postimage waitUntilDone:YES];
+        
+    }
+    
+    
+    
     // Update the navigation controller title with some information about the detection
     _level = -1;
     float scoreFloat = -1;
@@ -431,6 +444,13 @@
     }
 }
 
+- (IBAction)ihogAction:(UISwitch *)sender
+{
+    _ihog = sender.on;
+    if(!_ihog){
+        self.HOGimageView.image=nil;
+    }
+}
 
 
 #pragma mark -
@@ -499,6 +519,7 @@
         [self showSettingsAction:nil];
     }
 }
+
 
 @end
 

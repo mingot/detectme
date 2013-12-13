@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 
-static const int pixelsPerHogCell = 6; //hog cell: ~ x ~ pixels
+static const int pixelsPerHogCell = 8; //hog cell: ~ x ~ pixels
 
 
 @interface HogFeature : NSObject
@@ -27,7 +27,7 @@ static const int pixelsPerHogCell = 6; //hog cell: ~ x ~ pixels
 
 
 @interface UIImage (HOG)
-
+- (void) printMatlabFeatures: (HogFeature*) hog;
 - (HogFeature *) obtainHogFeatures;
 - (int *) obtainDimensionsOfHogFeatures;
 - (UIImage *) convertToHogImage;

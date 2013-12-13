@@ -64,6 +64,9 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 }
 
 
+
+
+
 - (void) dealloc
 {
     free(self.features);
@@ -75,12 +78,24 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
 
 @implementation UIImage (HOG)
 
+- (void) printMatlabFeatures:(HogFeature *) hog;
+{
+    printf("features=zeros(%d,%d,%d);",hog.numBlocksY,hog.numBlocksX,hog.numFeaturesPerBlock+1);
+    for(int y=0; y<hog.numBlocksY; y++){
+        for(int x=0; x<hog.numBlocksX; x++){
+            for(int f = 0; f<hog.numFeaturesPerBlock; f++){
+                printf("features(%d,%d,%d)=%f ; \n",y+1,x+1,f+1, hog.features[y + x*hog.numBlocksY + f*hog.numBlocksX*hog.numBlocksY]);
+            }
+        }
+    }
+    
+}
 
 
 - (HogFeature *) obtainHogFeatures
 {
     HogFeature *hog = [[HogFeature alloc] init];
-
+    
     //correct the orientation diference between UIImage and the underlying CGImage to make them coincide
     UIImage *correctedImage = [self fixOrientation];
     
@@ -95,7 +110,7 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     int bytesPerRow = bytesPerPixel * width;
     int bitsPerComponent = 8;
     UInt8 *im = (UInt8 *)malloc(height * width * 4);
-        
+    
     CGContextRef contextImage = CGBitmapContextCreate(im, width, height,
                                                       bitsPerComponent, bytesPerRow, colorSpace,
                                                       kCGImageAlphaPremultipliedLast| kCGBitmapByteOrder32Big );
@@ -104,7 +119,7 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     CGContextRelease(contextImage);
     
     int dims[2] = {height, width};
-
+    
     int blocks[2]; //HOG features size
     blocks[0] = (int)round((double)dims[0]/(double)pixelsPerHogCell); //HOG Cell of (pixelsPerHogCell)x(pixelsPerHogCell) pixels
     blocks[1] = (int)round((double)dims[1]/(double)pixelsPerHogCell);
@@ -130,7 +145,7 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
             
             UInt8 *s = 0; //pointer to the image pixel
             double dx, dy, v, dx2, dy2, v2, dx3, dy3, v3;
-
+            
             s = im + min_int(x, dims[1]-2)*4 + min_int(y, dims[0]-2)*dims[1]*4; //pointer to the image pixel, column-major matrix structure
             
             // first color channel
@@ -250,7 +265,7 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
             src = hist + (x+1)*blocks[0] + (y+1);
             for (int o = 0; o < 18; o++) //looping over the different channels of
             {
-                double h1 = min(*src * n1, 0.2); 
+                double h1 = min(*src * n1, 0.2);
                 double h2 = min(*src * n2, 0.2);
                 double h3 = min(*src * n3, 0.2);
                 double h4 = min(*src * n4, 0.2);
@@ -293,7 +308,6 @@ static inline int max_int(int x, int y) { return (x <= y ? y : x); }
     free(hist);
     free(norm);
     free(im);
-
     return hog;
 }
 

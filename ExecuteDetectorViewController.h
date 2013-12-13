@@ -46,6 +46,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *connectButton;
 
 
+
 //info label
 @property (weak, nonatomic) IBOutlet UILabel *infoLabel;
 
@@ -55,6 +56,7 @@
 - (IBAction)switchCameras:(id)sender;
 - (IBAction)switchValueDidChange:(UISwitch *)sw;
 - (IBAction)sendBoxesToServer:(UIButton *)senderButton;
+- (IBAction)ihogAction:(UISwitch *)sender;
 
 // test
 @property BOOL isTest;

@@ -1,0 +1,8 @@
+PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"`
+
+.PHONY: all
+
+all: $(SHLIB)
+
+clean:
+	rm -f *.o
